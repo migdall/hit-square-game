@@ -1,0 +1,51 @@
+body {
+background: #FFFFFF;
+min-height: 100%;
+}
+
+nav.sidePanel {
+position: absolute;
+top: 0;
+left: 0;
+background-color: #2A9CFF;
+min-height: 80px;
+max-height: 25%;
+width: 100%;
+}
+
+aside.gameBoard {
+position: relative;
+top: 100px;
+left: 0;
+width: 100%;
+height: 75%;
+}
+
+div.container {
+position: absolute;
+top: 0;
+left: 0;
+background-color: #9BD0FF;
+height: 100%;
+width: 100%;
+}
+
+p {
+font-family: Helvetica;
+font-size: 2.0em;
+font-weight: 900;
+color: #242222;
+}
+
+p.sidePanelMainTitle {
+font-size: 3.0em;
+text-align: center;
+margin: 10px 0 0 0;
+}
+
+canvas#gameArena {
+margin: 15px auto;
+background: #FFFFFF;
+width: 100%;
+height: 90%;
+}
