@@ -13,7 +13,7 @@ max-width: 288px;
 min-width: 250px;
 }
 
-aside.gameBoard {
+div#gameBoard {
 position: relative;
 top: 0;
 left: 288px;
@@ -39,11 +39,4 @@ color: #242222;
 
 p.sidePanelMainTitle {
 text-align: center;
-}
-
-canvas#gameArena {
-margin: 15px auto;
-background: #FFFFFF;
-width: 640px;
-height: 320px;
 }
