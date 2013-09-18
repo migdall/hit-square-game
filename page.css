@@ -17,8 +17,9 @@ div#gameBoard {
 position: relative;
 top: 0;
 left: 288px;
-width: 640px;
-height: 320px;
+width: 940px;
+height: 420px;
+border: 1px solid black;
 }
 
 div.container {

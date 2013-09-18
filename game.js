@@ -10,23 +10,26 @@
 $(document).ready(function() {
 	var stage = new Kinetic.Stage({
 		container: 'gameBoard',
-		width: 640,
-		height: 320
+		width: 940,
+		height: 420
 	});
 
 	var layer = new Kinetic.Layer();
 
-	var rect = new Kinetic.Rect({
-		x: 239,
-		y: 75,
-		width: 100,
-		height: 50,
-		fill: 'green',
-		stroke: 'black',
-		strokeWidth: 4
-	});
-
-	layer.add(rect);
+	// set the game board
+	for (var j = 0; j < 5; j++) {
+		for (var i = 0; i < 6; i++) {
+			layer.add(new Kinetic.Rect({
+				x: (39+(100*i)),
+				y: (75+(50*j)),
+				width: 100,
+				height: 50,
+				fill: 'green',
+				stroke: 'black',
+				strokeWidth: 4
+			}));
+		}
+	}
 
 	stage.add(layer);
 });
