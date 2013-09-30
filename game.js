@@ -27,9 +27,15 @@ $(document).ready(function() {
 				fill: 'green',
 				stroke: 'black',
 				strokeWidth: 4
+			}).on('mousedown', function() {
+				this.setFill('red');
+				layer.draw();
 			}));
 		}
 	}
+
+	// set mouse event for each piece of the game board
+	
 
 	stage.add(layer);
 });
