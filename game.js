@@ -7,6 +7,12 @@
  */
 
 // game code
+function Point(point)
+{
+	this.point = point;
+	this.hit = false;
+}
+
 function Letter()
 {
 	this.points = [];
@@ -14,17 +20,29 @@ function Letter()
 
 Letter.prototype.setPoints = function(pointsArray) {
 	for(var index = 0; index < pointsArray.length; index++) {
-		this.points.push(pointsArray[index]);
+		this.points.push(new Point(pointsArray[index]));
 	}
 }
 
 Letter.prototype.isPoint = function(point) {
-	var indexOfResult = this.points.indexOf(point);
-	if(indexOfResult != -1) {
-		return true;
+	for(var index = 0; index < this.points.length; index++) {
+		if(this.points[index].point == point) {
+			this.points[index].hit = true;
+			return true;
+		}
 	}
 
 	return false;
+}
+
+Letter.prototype.allPointsHit = function() {
+	for(var index = 0; index < this.points.length; index++) {
+		if(this.points[index].hit == false) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 var theLetterI = new Letter();
@@ -55,6 +73,9 @@ $(document).ready(function() {
 				if(theLetterI.isPoint(layer.children.indexOf(this))) {
 					this.setFill('red');
 					layer.draw();
+					if(theLetterI.allPointsHit()) {
+						alert("Great job, you found the letter!");
+					}
 				} else {
 					this.setFill('blue');
 					layer.draw();
