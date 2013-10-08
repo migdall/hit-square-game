@@ -7,6 +7,15 @@
  */
 
 
+// game variables
+var GAME_WIDTH = 940,
+	GAME_HEIGHT = 420
+	NEXT_LEVEL_TEXT_WIDTH = 300,
+	NEXT_LEVEL_TEXT_HEIGHT = 125,
+	NEXT_LEVEL_X = 600,
+	NEXT_LEVEL_Y = 50;
+
+
 // game code
 function Point(point)
 {
@@ -97,7 +106,41 @@ letterBin.letters.push(theLetterU);
 // the current letter
 var theLetter = letterBin.nextLetter();
 
+// text methods
+var nextLevelText = new Kinetic.Text({
+	x: NEXT_LEVEL_X,
+	y: NEXT_LEVEL_Y,
+	text: "You've found the correct letter! Click here to continue.",
+	fontSize: 28,
+	fontFamily: 'Calibri',
+	fill: '#222',
+	width: NEXT_LEVEL_TEXT_WIDTH,
+	height: NEXT_LEVEL_TEXT_HEIGHT,
+	padding: 20,
+	align: 'center'	
+}).on('mousedown', function() {
+	theLetter = letterBin.nextLetter();
+	drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
+});
+
+var nextLevelBackgroundRect = new Kinetic.Rect({
+	x: NEXT_LEVEL_X,
+	y: NEXT_LEVEL_Y,
+	stroke: '#555',
+	strokeWidth: 5,
+	fill: '#ddd',
+	width: 300,
+	height: NEXT_LEVEL_TEXT_HEIGHT,
+	shadowColor: 'black',
+	shadownBlur: 10,
+	shadowOffset: [10, 10],
+	shadowOpacity: 0.2,
+	cornerRadius: 10
+});
+
 // kinectic's staging area
+var beginLevel = true;
+var endLevel = false;
 var stage;
 var layer;
 function drawGameBoard(width, height) {
@@ -131,6 +174,8 @@ function drawGameBoard(width, height) {
 								layer.children[x].hide();
 							}
 						}
+						layer.add(nextLevelBackgroundRect);
+						layer.add(nextLevelText);
 						layer.draw();
 					}
 				} else {
@@ -145,5 +190,5 @@ function drawGameBoard(width, height) {
 }
 
 $(document).ready(function() {
-	drawGameBoard(940, 420);
+	drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
 });
