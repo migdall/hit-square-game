@@ -13,13 +13,16 @@ var GAME_WIDTH = 840,
 	NEXT_LEVEL_TEXT_WIDTH = 300,
 	NEXT_LEVEL_TEXT_HEIGHT = 125,
 	NEXT_LEVEL_X = 520,
-	NEXT_LEVEL_Y = 50;
+	NEXT_LEVEL_Y = 50,
+	SHOW_END_GAME_TEXT = false,
+	SHOW_NEXT_LEVEL_TEXT = false;
 
 // kinectic's staging area
 var beginLevel = true;
 var endLevel = false;
 var stage;
 var layer;
+var commLayer;
 
 // game code
 function Point(point)
@@ -128,8 +131,12 @@ var nextLevelText = new Kinetic.Text({
 	align: 'center'	
 }).on('mousedown', function() {
 	theLetter = letterBin.nextLetter();
+	layer.destroyChildren();
 	if(theLetter != -1) {
 		drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
+		nextLevelText.hide();
+		nextLevelBackgroundRect.hide();
+		commLayer.draw();
 	} else {
 		drawEndGame(GAME_WIDTH, GAME_HEIGHT);
 	}
@@ -152,15 +159,7 @@ var nextLevelBackgroundRect = new Kinetic.Rect({
 
 // the end game drawing
 function drawEndGame(width, height) {
-	stage = new Kinetic.Stage({
-		container: 'game',
-		width: width,
-		height: height
-	});
-
-	layer = new Kinetic.Layer();
-
-	nextLevelText = new Kinetic.Text({
+	var endLevelText = new Kinetic.Text({
 		x: ((width/2) - NEXT_LEVEL_TEXT_WIDTH),
 		y: ((height/2) - NEXT_LEVEL_TEXT_HEIGHT),
 		text: "You've found all of the letters.",
@@ -180,7 +179,7 @@ function drawEndGame(width, height) {
 			}
 	});
 
-	nextLevelBackgroundRect = new Kinetic.Rect({
+	var endLevelBackgroundRect = new Kinetic.Rect({
 		x: ((width/2) - NEXT_LEVEL_TEXT_WIDTH),
 		y: ((height/2) - NEXT_LEVEL_TEXT_HEIGHT),
 		stroke: '#555',
@@ -195,22 +194,15 @@ function drawEndGame(width, height) {
 		cornerRadius: 10
 	});
 
-	layer.add(nextLevelBackgroundRect);
-	layer.add(nextLevelText);
-	layer.draw();
+	commLayer.destroyChildren();
+	commLayer.draw();
 
-	stage.add(layer);
+	commLayer.add(endLevelBackgroundRect);
+	commLayer.add(endLevelText);
+	commLayer.draw();
 }
 
 function drawGameBoard(width, height) {
-	stage = new Kinetic.Stage({
-		container: 'game',
-		width: width, //940
-		height: height //420
-	});
-
-	layer = new Kinetic.Layer();
-
 	// set the game board
 	// set mouse event for each piece of the game board
 	for (var j = 0; j < 5; j++) {
@@ -235,8 +227,10 @@ function drawGameBoard(width, height) {
 						}
 						$("#textbin").append(theLetter.name);
 						$("#textbin").append("&nbsp;");
-						layer.add(nextLevelBackgroundRect);
-						layer.add(nextLevelText);
+						SHOW_NEXT_LEVEL_TEXT = true;
+						nextLevelText.show();
+						nextLevelBackgroundRect.show();
+						commLayer.draw();
 						layer.draw();
 					}
 				} else {
@@ -246,11 +240,25 @@ function drawGameBoard(width, height) {
 			}));
 		}
 	}
-
-	stage.add(layer);
+	layer.draw();
 }
 
 $(document).ready(function() {
-	//GAME_WIDTH = $("#game").width();
+	var config = {}
+	config.container = 'game';
+	config.width = GAME_WIDTH;
+	config.height = GAME_HEIGHT;
+
+	stage = new Kinetic.Stage(config);
+
+	layer = new Kinetic.Layer();
+	commLayer = new Kinetic.Layer();
+	commLayer.add(nextLevelBackgroundRect);
+	commLayer.add(nextLevelText);
+	nextLevelText.hide();
+	nextLevelBackgroundRect.hide();
+	stage.add(layer);
+	stage.add(commLayer);
+
 	drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
 });
