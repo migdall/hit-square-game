@@ -8,13 +8,18 @@
 
 
 // game variables
-var GAME_WIDTH = 940,
+var GAME_WIDTH = 840,
 	GAME_HEIGHT = 420
 	NEXT_LEVEL_TEXT_WIDTH = 300,
 	NEXT_LEVEL_TEXT_HEIGHT = 125,
-	NEXT_LEVEL_X = 600,
+	NEXT_LEVEL_X = 520,
 	NEXT_LEVEL_Y = 50;
 
+// kinectic's staging area
+var beginLevel = true;
+var endLevel = false;
+var stage;
+var layer;
 
 // game code
 function Point(point)
@@ -23,9 +28,10 @@ function Point(point)
 	this.hit = false;
 }
 
-function Letter()
+function Letter(name)
 {
 	this.points = [];
+	this.name = name;
 }
 
 Letter.prototype.setPoints = function(pointsArray) {
@@ -70,26 +76,28 @@ LetterBin.prototype.nextLetter = function() {
 		while(this.used.indexOf(num) != -1) {
 			num = Math.floor(Math.random() * (max - min) + min);
 		}
+	} else {
+		return -1;
 	}
 	this.used.push(num);
 	return this.letters[num];
 }
 
-var theLetterI = new Letter();
+var theLetterI = new Letter("I");
 theLetterI.setPoints([2, 3, 4, 9, 15, 21, 26, 27, 28]);
-var theLetterL = new Letter();
+var theLetterL = new Letter("L");
 theLetterL.setPoints([2, 8, 14, 20, 26, 27]);
-var theLetterO1 = new Letter();
+var theLetterO1 = new Letter("O");
 theLetterO1.setPoints([3, 8, 14, 21, 16, 10]);
-var theLetterO2 = new Letter();
+var theLetterO2 = new Letter("O");
 theLetterO2.setPoints([3, 8, 14, 21, 16, 10]);
-var theLetterV = new Letter();
+var theLetterV = new Letter("V");
 theLetterV.setPoints([0, 7, 14, 9, 4]);
-var theLetterE = new Letter();
+var theLetterE = new Letter("E");
 theLetterE.setPoints([4, 3, 2, 8, 14, 15, 16, 20, 26, 27, 28]);
-var theLetterY = new Letter();
+var theLetterY = new Letter("Y");
 theLetterY.setPoints([0, 7, 14, 9, 4, 20, 26]);
-var theLetterU = new Letter();
+var theLetterU = new Letter("U");
 theLetterU.setPoints([1, 7, 13, 19, 25, 26, 20, 27, 21, 15, 9, 3]);
 
 // add letters to bin for the message
@@ -120,7 +128,11 @@ var nextLevelText = new Kinetic.Text({
 	align: 'center'	
 }).on('mousedown', function() {
 	theLetter = letterBin.nextLetter();
-	drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
+	if(theLetter != -1) {
+		drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
+	} else {
+		drawEndGame(GAME_WIDTH, GAME_HEIGHT);
+	}
 });
 
 var nextLevelBackgroundRect = new Kinetic.Rect({
@@ -138,14 +150,61 @@ var nextLevelBackgroundRect = new Kinetic.Rect({
 	cornerRadius: 10
 });
 
-// kinectic's staging area
-var beginLevel = true;
-var endLevel = false;
-var stage;
-var layer;
+// the end game drawing
+function drawEndGame(width, height) {
+	stage = new Kinetic.Stage({
+		container: 'game',
+		width: width,
+		height: height
+	});
+
+	layer = new Kinetic.Layer();
+
+	nextLevelText = new Kinetic.Text({
+		x: ((width/2) - NEXT_LEVEL_TEXT_WIDTH),
+		y: ((height/2) - NEXT_LEVEL_TEXT_HEIGHT),
+		text: "You've found all of the letters.",
+		fontSize: 28,
+		fontFamily: 'Calibri',
+		fill: '#222',
+		width: NEXT_LEVEL_TEXT_WIDTH,
+		height: NEXT_LEVEL_TEXT_HEIGHT,
+		padding: 20,
+		align: 'center'	
+		}).on('mousedown', function() {
+			theLetter = letterBin.nextLetter();
+			if(theLetter != -1) {
+				drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
+			} else {
+				drawEndGame(GAME_WIDTH, GAME_HEIGHT);
+			}
+	});
+
+	nextLevelBackgroundRect = new Kinetic.Rect({
+		x: ((width/2) - NEXT_LEVEL_TEXT_WIDTH),
+		y: ((height/2) - NEXT_LEVEL_TEXT_HEIGHT),
+		stroke: '#555',
+		strokeWidth: 5,
+		fill: '#ddd',
+		width: 300,
+		height: NEXT_LEVEL_TEXT_HEIGHT,
+		shadowColor: 'black',
+		shadownBlur: 10,
+		shadowOffset: [10, 10],
+		shadowOpacity: 0.2,
+		cornerRadius: 10
+	});
+
+	layer.add(nextLevelBackgroundRect);
+	layer.add(nextLevelText);
+	layer.draw();
+
+	stage.add(layer);
+}
+
 function drawGameBoard(width, height) {
 	stage = new Kinetic.Stage({
-		container: 'gameBoard',
+		container: 'game',
 		width: width, //940
 		height: height //420
 	});
@@ -174,6 +233,8 @@ function drawGameBoard(width, height) {
 								layer.children[x].hide();
 							}
 						}
+						$("#textbin").append(theLetter.name);
+						$("#textbin").append("&nbsp;");
 						layer.add(nextLevelBackgroundRect);
 						layer.add(nextLevelText);
 						layer.draw();
@@ -190,5 +251,6 @@ function drawGameBoard(width, height) {
 }
 
 $(document).ready(function() {
+	//GAME_WIDTH = $("#game").width();
 	drawGameBoard(GAME_WIDTH, GAME_HEIGHT);
 });
